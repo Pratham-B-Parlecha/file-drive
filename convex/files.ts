@@ -74,3 +74,30 @@ export const getFiles = query({
       .collect();
   },
 });
+
+
+export const deleteFile = mutation({
+  args: {
+    fileId: v.id("files"),
+  },
+  async handler(ctx, args) {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new ConvexError("Not authenticated");
+    }
+    const file = await ctx.db.get(args.fileId);
+    if (!file) {
+      throw new ConvexError("file not found");
+    }
+    const hasAccess = await hasAccessToOrg(
+      ctx,
+      identity.tokenIdentifier,
+      file.orgId || ""
+    );
+    if (!hasAccess) {
+      throw new ConvexError("have no access to the organiztion");
+    }
+    await ctx.db.delete(args.fileId);
+  },
+})
