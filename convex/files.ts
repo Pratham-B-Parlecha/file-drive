@@ -26,6 +26,7 @@ export const createFile = mutation({
     name: v.string(),
     fileId: v.id("_storage"),
     orgId: v.string(),
+    type: v.union(v.literal("image"), v.literal("pdf"), v.literal("csv")),
   },
   async handler(ctx, args) {
     const identity = await ctx.auth.getUserIdentity();
@@ -47,6 +48,7 @@ export const createFile = mutation({
       name: args.name,
       fileId: args.fileId,
       orgId: args.orgId,
+      type: args.type,
     });
   },
 });
@@ -54,6 +56,7 @@ export const createFile = mutation({
 export const getFiles = query({
   args: {
     orgId: v.string(),
+    query: v.optional(v.string()),
   },
   async handler(ctx, args) {
     const identity = await ctx.auth.getUserIdentity();
@@ -68,13 +71,21 @@ export const getFiles = query({
     if (!hasAccess) {
       return [];
     }
-    return ctx.db
+    let files = await ctx.db
       .query("files")
       .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId))
       .collect();
+      
+    const query = args.query;
+    if (query) {
+      return files.filter((file) =>
+        file.name.toLowerCase().includes(query.toLowerCase())
+      );
+    } else {
+      return files;
+    }
   },
 });
-
 
 export const deleteFile = mutation({
   args: {
@@ -100,4 +111,4 @@ export const deleteFile = mutation({
     }
     await ctx.db.delete(args.fileId);
   },
-})
+});

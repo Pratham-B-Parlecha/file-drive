@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { useOrganization, useUser } from "@clerk/nextjs";
 import { useMutation } from "convex/react";
-import { api } from "../../convex/_generated/api";
+import { api } from "../../../../convex/_generated/api";
 import {
   Dialog,
   DialogContent,
@@ -28,6 +28,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { Doc } from "../../../../convex/_generated/dataModel";
 
 const formSchema = z.object({
   title: z.string().min(2).max(50),
@@ -64,8 +65,13 @@ export function UploadButton() {
       body: values.file[0],
     });
     const { storageId } = await result.json();
+    const Type = {
+      "application/pdf": "pdf",
+      "image/png": "image",
+      "text/csv": "csv",
+    } as Record<string, Doc<"files">["type"]>;
     try {
-      await createFile({ name: values.title, orgId, fileId: storageId });
+      await createFile({ name: values.title, orgId, fileId: storageId, type: Type[values.file[0].type] });
       form.reset();
 
       setIsFileDialogOpen(false);
@@ -116,7 +122,7 @@ export function UploadButton() {
                       name="title"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>File</FormLabel>
+                          <FormLabel>title</FormLabel>
                           <FormControl>
                             <Input {...field} />
                           </FormControl>
@@ -129,7 +135,7 @@ export function UploadButton() {
                       name="file"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Title</FormLabel>
+                          <FormLabel>File</FormLabel>
                           <FormControl>
                             <Input type="file" {...fileRef} />
                           </FormControl>
