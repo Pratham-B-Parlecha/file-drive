@@ -24,9 +24,11 @@ function PlaceHolder() {
 export function FileBrowser({
   title,
   favorite,
+  deleted
 }: {
   title: string;
   favorite?: boolean;
+  deleted?: boolean
 }) {
   const { organization, isLoaded: orgLoaded } = useOrganization();
   const { user, isLoaded: userLoaded } = useUser();
@@ -42,7 +44,7 @@ export function FileBrowser({
 
   const files = useQuery(
     api.files.getFiles,
-    orgId ? { orgId, query, favorite } : "skip"
+    orgId ? { orgId, query, favorite, deleted } : "skip"
   );
 
   const isLoading = files === undefined;
