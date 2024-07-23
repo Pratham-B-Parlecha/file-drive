@@ -3,7 +3,7 @@ import { FileBrowser } from "../_component/file-browser";
 export default function TrashPage() {
   return (
     <div>
-      <FileBrowser title="Your Favorite" deleted />
+      <FileBrowser title="Deleted Files" deleted />
     </div>
   );
 }
