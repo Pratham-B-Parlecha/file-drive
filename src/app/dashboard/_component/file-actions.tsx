@@ -37,7 +37,6 @@ export function FileCardActions({
   file: Doc<"files"> & { url: string | null };
   isFavorite: boolean;
 }) {
-  console.log(file)
   const { toast } = useToast();
   const deleteFile = useMutation(api.files.deleteFile);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);

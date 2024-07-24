@@ -20,9 +20,21 @@ function UserCell({ userId }: { userId: Id<"users"> }) {
     </div>
   );
 }
+type FileWithFavorite = {
+  isFavorite: boolean;
+  url: string | null;
+  _id: Id<"files">;
+  _creationTime: number;
+  orgId?: string;
+  shouldDeleted?: boolean;
+  name: string;
+  type: "image" | "pdf" | "csv";
+  fileId: Id<"_storage">;
+  userId: Id<"users">;
+};
 
 export const columns: ColumnDef<
-  Doc<"files"> & { isFavorite: boolean; url: string }
+  FileWithFavorite
 >[] = [
   {
     accessorKey: "name",
