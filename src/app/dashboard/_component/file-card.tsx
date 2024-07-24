@@ -28,12 +28,12 @@ import { FileCardActions } from "./file-actions";
 export function FileCard({
   file,
 }: {
-  file: Doc<"files"> & { isFavorite : boolean, url: string | null };
+  file: Doc<"files"> & { isFavorite : boolean; url: string | null };
 }) {
   const userProfile = useQuery(api.users.getUserProfile, {
     userId: file.userId,
   });
-  console.log(userProfile);
+  
   const fileIcon = {
     pdf: <FileTextIcon />,
     image: <ImageIcon />,

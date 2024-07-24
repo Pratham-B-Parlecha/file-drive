@@ -108,13 +108,13 @@ export const getFiles = query({
     if (args.type) {
       files = files.filter((file) => file.type === args.type);
     }
-    files = await Promise.all(
+    const filesWithUrl = await Promise.all(
       files.map(async (file) => ({
         ...file,
         url: await ctx.storage.getUrl(file.fileId),
       }))
     );
-    return files;
+    return filesWithUrl;
   },
 });
 
